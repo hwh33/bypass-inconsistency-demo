@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hbase.Coprocessor;
+import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.HBaseTestingUtility;
 import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HRegionInfo;
@@ -45,11 +46,14 @@ public class MyHBaseCluster implements AutoCloseable {
 	 * In-memory instance.
 	 */
 	public MyHBaseCluster() throws Exception {
-		HBaseTestingUtility testingUtility = new HBaseTestingUtility();
+		Configuration config = HBaseConfiguration.create();
+		config.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+		config.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+		HBaseTestingUtility testingUtility = new HBaseTestingUtility(config);
 
 		try {
 			testingUtility.startMiniCluster();
-			Configuration config = testingUtility.getConfiguration();
+			config = testingUtility.getConfiguration();
 			HTableDescriptor htd = initializeTable(config);
 			this.region = initializeRegion(htd, config);
 
@@ -72,7 +76,7 @@ public class MyHBaseCluster implements AutoCloseable {
 
 		shutDownProcedure = () -> {
 			try {
-				testingUtility.shutdownMiniCluster();
+				testingUtility.shutdownMiniHBaseCluster();
 			} catch (Exception e) {
 				return e;
 			}
