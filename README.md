@@ -9,9 +9,9 @@ To see the logic behind this test, look to src/main/java/demonstration/BypassDem
 To run the demonstration for yourself:
 
 1. Clone the repository to your machine
-    git clone git@github.com:hwh33/bypass-inconsistency-demo.git
+    `git clone git@github.com:hwh33/bypass-inconsistency-demo.git`
 2. Use gradle to run the main method of BypassDemonstration
-    gradle run
+    `gradle run`
     
 Gradle will download any dependencies you are missing, compile the project, and run the demonstration.
 You will see the final output "Test complete, all assertions held true." which indicates that the
@@ -24,5 +24,5 @@ the demo against an actual HBase cluster, you need to specify "against-cluster" 
 path to the Hadoop configuration file for the cluster.
 
 The command should look like:
-    gradle run -Pargs=against-cluster,/path/to/config-file
+    `gradle run -Pargs=against-cluster,/path/to/config-file`
 
