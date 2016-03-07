@@ -1,0 +1,52 @@
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+buildscript {
+	repositories {
+		mavenCentral()
+		maven {
+			url "https://repository.cloudera.com/artifactory/cloudera-repos/"
+		}
+	}
+	dependencies {
+//		classpath 'org.apache.hbase:hbase:1.0.0-cdh5.4.2'
+		classpath 'org.apache.hbase:hbase-client:1.2.0'
+	}
+}
+
+// In this section you declare where to find the dependencies of your project
+repositories {
+    // Use 'jcenter' for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    jcenter()
+	mavenCentral()
+	maven {
+		url "https://repository.cloudera.com/artifactory/cloudera-repos/"
+	}
+}
+
+// In this section you declare the dependencies for your production and test code
+dependencies {
+//	compile 'org.apache.hbase:hbase:1.0.0-cdh5.4.2'
+	compile 'org.apache.hbase:hbase-client:1.2.0'
+	compile 'org.apache.hbase:hbase-testing-util:1.2.0'
+}
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src/java'
+		}
+	}
+}
+
+task run(type:JavaExec) {
+	description = "Runs the bypass inconsistency demonstration."
+	main = "demonstration.BypassDemonstration"
+	if (!project.hasProperty("args")) {
+		// default to in-memory mode
+		args = ["in-memory"]
+	}
+	classpath = sourceSets.main.runtimeClasspath
+}
