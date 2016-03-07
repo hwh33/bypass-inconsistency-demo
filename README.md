@@ -15,7 +15,7 @@ To run the demonstration for yourself:
     
 Gradle will download any dependencies you are missing, compile the project, and run the demonstration.
 You will see the final output "Test complete, all assertions held true." which indicates that the
-assertions (which demonstrate inconsistencies) held true.
+assertions (which demonstrate inconsistencies in the bypass method) held true.
 
 # Running this demonstration against an HBase cluster
 
