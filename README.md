@@ -8,9 +8,9 @@ To see the logic behind this test, look to src/main/java/demonstration/BypassDem
 
 To run the demonstration for yourself:
 
-1. Clone the repository to your machine
+1. Clone the repository to your machine:
     `git clone git@github.com:hwh33/bypass-inconsistency-demo.git`
-2. Use gradle to run the main method of BypassDemonstration
+2. Use gradle to run the main method of BypassDemonstration:
     `gradle run`
     
 Gradle will download any dependencies you are missing, compile the project, and run the demonstration.
