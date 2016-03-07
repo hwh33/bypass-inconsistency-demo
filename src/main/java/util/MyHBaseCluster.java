@@ -45,7 +45,15 @@ public class MyHBaseCluster implements AutoCloseable {
 	 * In-memory instance.
 	 */
 	public MyHBaseCluster() throws Exception {
+<<<<<<< Updated upstream
 		HBaseTestingUtility testingUtility = new HBaseTestingUtility();
+=======
+		Configuration config = HBaseConfiguration.create();
+		// This is simply to resolve a name-space issue in creating the JAR.
+		config.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+		config.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+		HBaseTestingUtility testingUtility = new HBaseTestingUtility(config);
+>>>>>>> Stashed changes
 
 		try {
 			testingUtility.startMiniCluster();
@@ -87,6 +95,10 @@ public class MyHBaseCluster implements AutoCloseable {
 	 *            the configuration for the cluster
 	 */
 	public MyHBaseCluster(Configuration config) throws Exception {
+		// This is simply to resolve a name-space issue in creating the JAR.
+		config.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
+		config.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());
+
 		shutDownProcedure = () -> {
 			try {
 				Admin admin = ConnectionFactory.createConnection(config).getAdmin();
