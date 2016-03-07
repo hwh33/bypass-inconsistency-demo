@@ -25,4 +25,16 @@ path to the Hadoop configuration file for the cluster.
 
 The command should look like:
     `gradle run -Pargs=against-cluster,/path/to/config-file`
+    
+# Packaging as an executable JAR
+
+To create an executable JAR, run:
+    `gradle shadowJar`
+    
+The JAR will be located at build/libs/BypassTest-all.jar.  It can be run by executing:
+    `java -jar build/libs/BypassTest-all.jar`
+
+This JAR file contains all of the necessaery dependencies, so you can run it anywhere and point it to your
+HBase configuration file:
+    `java -jar BypassTest-all.jar against-cluster /path/to/config-file`
 
