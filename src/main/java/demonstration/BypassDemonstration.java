@@ -25,7 +25,7 @@ import util.MyRegionObserver;
 public class BypassDemonstration {
 
 	// Set to true to suppress logging output.
-	private static final boolean QUIET_MODE = true;
+	private static final boolean QUIET_MODE = false;
 
 	/**
 	 * The first argument sets the mode and should be one of the following:
