@@ -2,6 +2,7 @@ package demonstration;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -38,13 +39,7 @@ public class BypassDemonstration {
 	 * <p>
 	 * Fails fast on any exceptions encountered.
 	 */
-	public static void main(String... args) throws Exception {
-		final byte[] QUALIFIER = "qualifier".getBytes();
-
-		// row keys
-		final byte[] BYPASSED_PUT_RK = "bypassed put".getBytes();
-		final byte[] NON_BYPASSED_PUT_RK = "non bypassed put".getBytes();
-
+	public static void main(String... args) {
 		// running modes
 		final String IN_MEMORY = "in-memory";
 		final String AGAINST_CLUSTER = "against-cluster";
@@ -59,17 +54,52 @@ public class BypassDemonstration {
 			Logger.getRootLogger().setLevel(Level.OFF);
 		}
 
+		System.out.println("Beginning in mode: " + mode);
+
 		// Set up the cluster.
 		MyHBaseCluster cluster;
-		if (mode.equals(IN_MEMORY)) {
-			cluster = new MyHBaseCluster();
-		} else {
-			String pathToConfig = args[1];
-			Configuration config = HBaseConfiguration.create();
-			config.addResource(new FileInputStream(new File(pathToConfig)));
+		try {
+			if (mode.equals(IN_MEMORY)) {
+				System.out.println("Setting up in-memory cluster");
+				cluster = new MyHBaseCluster();
+			} else {
+				String pathToConfig = args[1];
+				Configuration config = HBaseConfiguration.create();
+				config.addResource(new FileInputStream(new File(pathToConfig)));
 
-			cluster = new MyHBaseCluster(config);
+				System.out.println("Establishing connection to cluster");
+				cluster = new MyHBaseCluster(config);
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("Configuration file not found; exiting");
+			System.exit(1);
+			return;
+		} catch (Exception e) {
+			System.err.println("Fatal failure occured; exiting");
+			System.exit(1);
+			return;
 		}
+
+		System.out.println("Running test");
+		try {
+			doDemo(cluster);
+		} catch (Exception e) {
+			System.err.println("Failure occurred:");
+			e.printStackTrace(System.err);
+			System.err.println("Exiting");
+			System.exit(1);
+		}
+
+		System.out.println("Test complete, all assertions held true.");
+		System.exit(0);
+	}
+
+	private static void doDemo(MyHBaseCluster cluster) throws Exception {
+		// row keys
+		final byte[] BYPASSED_PUT_RK = "bypassed put".getBytes();
+		final byte[] NON_BYPASSED_PUT_RK = "non bypassed put".getBytes();
+
+		final byte[] QUALIFIER = "qualifier".getBytes();
 
 		// Get the region constructs from the cluster.
 		HRegion region = cluster.region();
@@ -106,9 +136,7 @@ public class BypassDemonstration {
 		// happens to other puts in the batch?
 		assert(regionObserver.prePutCalls() == 8 && regionObserver.postPutCalls() == 4);
 
-		System.out.println("Test complete, all assertions held true.");
 		cluster.close();
-		System.exit(0);
 	}
 
 }
